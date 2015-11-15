@@ -1,0 +1,17 @@
+#+STARTUP: showall
+
+#+HTML: <script src="bootstrap/js/bootstrap.min.js"></script>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"/>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-responsive.min.css"/>
+
+#+TITLE: How to create this site
+
+* Org-mode generate html site
+
+0. [[http://v3.bootcss.com/getting-started/#download][bootstrap]]
+
+1. emacs
+
+2. org-mode
+
+3. new line
