@@ -1,0 +1,184 @@
+#+STARTUP: showall
+#+STARTUP: hidestars
+#+HTML: <script src="../bootstrap/js/bootstrap.min.js"></script>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.css"/>
+#+AUTHOR:      Daniel C 
+#+DATE:        <2015-11-17 Tue>
+#+EMAIL:       thatways.c@gmail.com
+#+DESCRIPTION: the page description, e.g. for the XHTML meta tag
+#+KEYWORDS:    the page keywords, e.g. for the XHTML meta tag
+#+LANGUAGE:    language for HTML, e.g. ‘en’ (org-export-default-language)
+#+TEXT:        Some descriptive text to be inserted at the beginning.
+#+TEXT:        Several lines may be given.
+#+OPTIONS:     H:2 num:t toc:t \n:nil @:t ::t |:t ^:t f:t TeX:t ...
+#+LINK_UP:     the ``up'' link of an exported page
+#+LINK_HOME:   the ``home'' link of an exported page
+#+LATEX_HEADER: extra line(s) for the LaTeX header, like \usepackage{xyz}
+#+TITLE: How to build this site
+
+* Template Options
+#+BEGIN_SRC emacs-list
+#+STARTUP: showall
+#+STARTUP: hidestars
+#+HTML: <script src="bootstrap/js/bootstrap.min.js"></script>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>
+#+TITLE:       the title to be shown (default is the buffer name)
+#+AUTHOR:      Daniel C (thatways.c@gmail.com)
+#+DATE:        a date, fixed, of a format string for format-time-string
+#+EMAIL:       his/her email address (default from user-mail-address)
+#+DESCRIPTION: the page description, e.g. for the XHTML meta tag
+#+KEYWORDS:    the page keywords, e.g. for the XHTML meta tag
+#+LANGUAGE:    language for HTML, e.g. ‘en’ (org-export-default-language)
+#+TEXT:        Some descriptive text to be inserted at the beginning.
+#+TEXT:        Several lines may be given.
+#+OPTIONS:     H:2 num:t toc:t \n:nil @:t ::t |:t ^:t f:t TeX:t ...
+#+LINK_UP:     the ``up'' link of an exported page
+#+LINK_HOME:   the ``home'' link of an exported page
+#+LATEX_HEADER: extra line(s) for the LaTeX header, like \usepackage{xyz}
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-publish-project-alist
+      '(
+        ("org-htmls"                             ;Used to export .org file
+         :base-directory "~/Development/ogers"   ;directory holds .org files 
+         :base-extension "org"                   ;process .org file only    
+         :recursive t
+         :publishing-directory (concat org-site-path "/publish-html/") ;export destination
+         :publishing-function org-html-publish-to-html
+         :html-preamble '(with-temp-buffer (insert-file-contents "./html-preamble.html") (buffer-string))
+         :table-of-contents nil
+         :html-postamble t          ; your personal postamble
+         )
+        ("org-static"                ;Used to publish static files
+         :base-directory "~/Development/ogers/static"
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+         :publishing-directory (concat org-site-path "/publish-html/static")
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+        ("org" :components ("org-htmls" "org-static")) ;combine "org-htmls" and "org-static" into one function call
+        ))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun org-html-template (contents info)
+  "Return complete document string after HTML conversion.
+CONTENTS is the transcoded contents string.  INFO is a plist
+holding export options."
+  (concat
+   (when (and (not (org-html-html5-p info)) (org-html-xhtml-p info))
+     (let ((decl (or (and (stringp org-html-xml-declaration)
+			      org-html-xml-declaration)
+			 (cdr (assoc (plist-get info :html-extension)
+				     org-html-xml-declaration))
+			 (cdr (assoc "html" org-html-xml-declaration))
+
+			 "")))
+       (when (not (or (eq nil decl) (string= "" decl)))
+	 (format "%s\n"
+		 (format decl
+		  (or (and org-html-coding-system
+			   (fboundp 'coding-system-get)
+			   (coding-system-get org-html-coding-system 'mime-charset))
+		      "iso-8859-1"))))))
+   (org-html-doctype info)
+   "\n"
+   (concat "<html"
+	   (when (org-html-xhtml-p info)
+	     (format
+	      " xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"%s\" xml:lang=\"%s\""
+	      (plist-get info :language) (plist-get info :language)))
+	   ">\n")
+   "<head>\n"
+   (org-html--build-meta-info info)
+   (org-html--build-head info)
+   (org-html--build-mathjax-config info)
+   "</head>\n"
+   "<body>\n"
+   "
+<nav class=\"navbar navbar-default\">
+<div class=\"container-fluid\">
+<!-- Brand and toggle get grouped for better mobile display -->
+<div class=\"navbar-header\">
+    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\" aria-expanded=\"false\">
+    <span class=\"sr-only\">Toggle navigation</span>
+    <span class=\"icon-bar\"></span>
+    <span class=\"icon-bar\"></span>
+    <span class=\"icon-bar\"></span>
+    </button>
+    <a class=\"navbar-brand\" href=\"#\">Brand</a>
+</div>
+<!-- Collect the nav links, forms, and other content for toggling -->
+<div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-1\">
+    <ul class=\"nav navbar-nav\">
+    <li class=\"active\"><a href=\"#\">Link <span class=\"sr-only\">(current)</span></a></li>
+    <li><a href=\"#\">Link</a></li>
+    <li class=\"dropdown\">
+        <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Dropdown <span class=\"caret\"></span></a>
+        <ul class=\"dropdown-menu\">
+        <li><a href=\"#\">Action</a></li>
+        <li><a href=\"#\">Another action</a></li>
+        <li><a href=\"#\">Something else here</a></li>
+        <li role=\"separator\" class=\"divider\"></li>
+        <li><a href=\"#\">Separated link</a></li>
+        <li role=\"separator\" class=\"divider\"></li>
+        <li><a href=\"#\">One more separated link</a></li>
+        </ul>
+    </li>
+    </ul>
+    <form class=\"navbar-form navbar-left\" role=\"search\">
+    <div class=\"form-group\">
+        <input type=\"text\" class=\"form-control\" placeholder=\"Search\">
+    </div>
+    <button type=\"submit\" class=\"btn btn-default\">Submit</button>
+    </form>
+    <ul class=\"nav navbar-nav navbar-right\">
+    <li><a href=\"#\">Link</a></li>
+    <li class=\"dropdown\">
+        <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Dropdown <span class=\"caret\"></span></a>
+        <ul class=\"dropdown-menu\">
+        <li><a href=\"#\">Action</a></li>
+        <li><a href=\"#\">Another action</a></li>
+        <li><a href=\"#\">Something else here</a></li>
+        <li role=\"separator\" class=\"divider\"></li>
+        <li><a href=\"#\">Separated link</a></li>
+        </ul>
+    </li>
+    </ul>
+</div><!-- /.navbar-collapse -->
+</div><!-- /.container-fluid -->
+</nav>"
+
+   ;; Document container <bootstrap>
+   "<div class=\"container\">"
+   (let ((link-up (org-trim (plist-get info :html-link-up)))
+	 (link-home (org-trim (plist-get info :html-link-home))))
+     (unless (and (string= link-up "") (string= link-home ""))
+       (format org-html-home/up-format
+	       (or link-up link-home)
+	       (or link-home link-up))))
+   ;; Preamble.
+   (org-html--build-pre/postamble 'preamble info)
+   ;; Big head
+   "<div class=\"jumbotron\">"
+   "<h1>Hello, world!</h1>"
+   "<p>...</p>"
+   "<p><a class=\"btn btn-primary btn-lg\" href=\"#\" role=\"button\">Learn more</a></p>"
+   "</div>"
+   ;; Document contents.
+   (format "<%s id=\"%s\">\n"
+	   (nth 1 (assq 'content org-html-divs))
+	   (nth 2 (assq 'content org-html-divs)))
+   ;; Document title.
+   (let ((title (plist-get info :title)))
+     (format "<h1 class=\"title\">%s</h1>\n" (org-export-data (or title "") info)))
+   contents
+   (format "</%s>\n"
+	   (nth 1 (assq 'content org-html-divs)))
+   ;; Postamble.
+   (org-html--build-pre/postamble 'postamble info)
+   ;; Closing document.
+   "</div></body>\n</html>"))
+#+END_SRC

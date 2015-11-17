@@ -1,0 +1,36 @@
+#+STARTUP: showall
+#+STARTUP: hidestars
+#+HTML: <script src="bootstrap/js/bootstrap.min.js"></script>
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>
+#+AUTHOR:      Daniel C 
+#+DATE:        <2015-11-17 Tue>
+#+EMAIL:       thatways.c@gmail.com
+#+DESCRIPTION: the page description, e.g. for the XHTML meta tag
+#+KEYWORDS:    the page keywords, e.g. for the XHTML meta tag
+#+LANGUAGE:    language for HTML, e.g. ‘en’ (org-export-default-language)
+#+TEXT:        Some descriptive text to be inserted at the beginning.
+#+TEXT:        Several lines may be given.
+#+OPTIONS:     H:2 num:t toc:t \n:nil @:t ::t |:t ^:t f:t TeX:t ...
+#+LINK_UP:     the ``up'' link of an exported page
+#+LINK_HOME:   the ``home'' link of an exported page
+#+LATEX_HEADER: extra line(s) for the LaTeX header, like \usepackage{xyz}
+#+OPTIONS: toc:nil
+#+TITLE: Home
+
+-------------------------------------------------------   
+
+* 要做的事
+** 写一个博文说明如何用emacs生成这个网站
+** 学习一下#+INCLUDE: "~/.emacs" src emacs-lisp
+#+BEGIN_SRC emacs-list
+#+INCLUDE: "~/.emacs" src emacs-lisp
+#+END_SRC
+
+** [[http://www.cnblogs.com/Open_Source/archive/2011/07/17/2108747.html][看一下这个文章]]
+
+-------------------------------------------------------   
+
+* 博文一览
+** [[file:orgs/how-to-build-this-site.org][如何用Emacs制作这个网站]] 
+** [[file:orgs/magit.org][magit.org]]
+
